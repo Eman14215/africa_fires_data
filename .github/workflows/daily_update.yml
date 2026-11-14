@@ -1,0 +1,37 @@
+name: Update Africa Fires Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # بيشتغل أوتوماتيك كل يوم الساعة 8 صباحاً بتوقيت مصر
+  workflow_dispatch: # بيسمحلك تشغليه يدوي في أي وقت بضغطة زر
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install pandas
+        run: pip install pandas
+
+      - name: Run script
+        env:
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+        run: python fetch_fires.py
+
+      - name: Save updated CSV
+        run: |
+          git config --global user.name "Auto Bot"
+          git config --global user.email "bot@github.com"
+          git add africa_fires_latest.csv
+          git commit -m "Daily fire data update" || exit 0
+          git push
