@@ -32,6 +32,6 @@ jobs:
         run: |
           git config --global user.name "Auto Bot"
           git config --global user.email "bot@github.com"
-          git add africa_fires_latest.csv
+          git add *.csv
           git commit -m "Daily fire data update" || exit 0
           git push
